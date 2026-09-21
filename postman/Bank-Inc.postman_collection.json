@@ -1,0 +1,64 @@
+{
+  "info": {
+    "name": "Bank Inc Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:8080"},
+    {"key": "cardId", "value": ""},
+    {"key": "transactionId", "value": ""}
+  ],
+  "item": [
+    {
+      "name": "1 - Generate card",
+      "request": {"method": "GET", "url": "{{baseUrl}}/card/102030/number"}
+    },
+    {
+      "name": "2 - Activate card",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\"cardId\":\"{{cardId}}\"}"},
+        "url": "{{baseUrl}}/card/enroll"
+      }
+    },
+    {
+      "name": "3 - Recharge",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\"cardId\":\"{{cardId}}\",\"balance\":1000}"},
+        "url": "{{baseUrl}}/card/balance"
+      }
+    },
+    {
+      "name": "4 - Balance",
+      "request": {"method": "GET", "url": "{{baseUrl}}/card/balance/{{cardId}}"}
+    },
+    {
+      "name": "5 - Purchase",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\"cardId\":\"{{cardId}}\",\"price\":100}"},
+        "url": "{{baseUrl}}/transaction/purchase"}
+    },
+    {
+      "name": "6 - Transaction",
+      "request": {"method": "GET", "url": "{{baseUrl}}/transaction/{{transactionId}}"}
+    },
+    {
+      "name": "7 - Cancellation",
+      "request": {
+        "method": "POST",
+        "header": [{"key":"Content-Type","value":"application/json"}],
+        "body": {"mode":"raw","raw":"{\"cardId\":\"{{cardId}}\",\"transactionId\":\"{{transactionId}}\"}"},
+        "url": "{{baseUrl}}/transaction/anulation"
+      }
+    },
+    {
+      "name": "8 - Block",
+      "request": {"method": "DELETE", "url": "{{baseUrl}}/card/{{cardId}}"}
+    }
+  ]
+}
