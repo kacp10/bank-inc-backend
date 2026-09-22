@@ -1,24 +1,60 @@
 {
   "info": {
     "name": "Bank Inc Backend",
+    "description": "Colección para probar el flujo completo de tarjetas y transacciones de Bank Inc. Las solicitudes están preparadas para ejecutarse en orden. Para ejecución local, cambiar la variable baseUrl a http://localhost:8080.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
-    {"key": "baseUrl", "value": "http://localhost:8080"},
-    {"key": "cardId", "value": ""},
-    {"key": "transactionId", "value": ""}
+    {
+      "key": "baseUrl",
+      "value": "https://bank-inc-backend-production.up.railway.app"
+    },
+    {
+      "key": "cardId",
+      "value": ""
+    },
+    {
+      "key": "transactionId",
+      "value": ""
+    }
   ],
   "item": [
     {
       "name": "1 - Generate card",
-      "request": {"method": "GET", "url": "{{baseUrl}}/card/102030/number"}
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.json();",
+              "pm.collectionVariables.set(\"cardId\", response.cardId);",
+              "pm.test(\"Card generated successfully\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(response.cardId).to.have.lengthOf(16);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/card/102030/number"
+      }
     },
     {
       "name": "2 - Activate card",
       "request": {
         "method": "POST",
-        "header": [{"key":"Content-Type","value":"application/json"}],
-        "body": {"mode":"raw","raw":"{\"cardId\":\"{{cardId}}\"}"},
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"cardId\":\"{{cardId}}\"}"
+        },
         "url": "{{baseUrl}}/card/enroll"
       }
     },
@@ -26,39 +62,88 @@
       "name": "3 - Recharge",
       "request": {
         "method": "POST",
-        "header": [{"key":"Content-Type","value":"application/json"}],
-        "body": {"mode":"raw","raw":"{\"cardId\":\"{{cardId}}\",\"balance\":1000}"},
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"cardId\":\"{{cardId}}\",\"balance\":1000}"
+        },
         "url": "{{baseUrl}}/card/balance"
       }
     },
     {
       "name": "4 - Balance",
-      "request": {"method": "GET", "url": "{{baseUrl}}/card/balance/{{cardId}}"}
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/card/balance/{{cardId}}"
+      }
     },
     {
       "name": "5 - Purchase",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const response = pm.response.json();",
+              "pm.collectionVariables.set(\"transactionId\", response.transactionId);",
+              "pm.test(\"Purchase approved\", function () {",
+              "    pm.response.to.have.status(200);",
+              "    pm.expect(response.status).to.eql(\"APPROVED\");",
+              "});"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "POST",
-        "header": [{"key":"Content-Type","value":"application/json"}],
-        "body": {"mode":"raw","raw":"{\"cardId\":\"{{cardId}}\",\"price\":100}"},
-        "url": "{{baseUrl}}/transaction/purchase"}
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"cardId\":\"{{cardId}}\",\"price\":100}"
+        },
+        "url": "{{baseUrl}}/transaction/purchase"
+      }
     },
     {
       "name": "6 - Transaction",
-      "request": {"method": "GET", "url": "{{baseUrl}}/transaction/{{transactionId}}"}
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/transaction/{{transactionId}}"
+      }
     },
     {
       "name": "7 - Cancellation",
       "request": {
         "method": "POST",
-        "header": [{"key":"Content-Type","value":"application/json"}],
-        "body": {"mode":"raw","raw":"{\"cardId\":\"{{cardId}}\",\"transactionId\":\"{{transactionId}}\"}"},
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"cardId\":\"{{cardId}}\",\"transactionId\":\"{{transactionId}}\"}"
+        },
         "url": "{{baseUrl}}/transaction/anulation"
       }
     },
     {
       "name": "8 - Block",
-      "request": {"method": "DELETE", "url": "{{baseUrl}}/card/{{cardId}}"}
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/card/{{cardId}}"
+      }
     }
   ]
 }
