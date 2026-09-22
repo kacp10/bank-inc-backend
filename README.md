@@ -233,4 +233,18 @@ contiene solicitudes para probar el flujo de la API.
 
 ## Despliegue
 
-La aplicación está preparada para recibir la conexión a PostgreSQL mediante las variables de entorno `DB_URL`, `DB_USERNAME` y `DB_PASSWORD`, permitiendo utilizar la misma configuración tanto localmente como en un entorno de nube.
+La API se encuentra desplegada en Railway y utiliza PostgreSQL como base de datos.
+
+### Swagger UI
+
+La API desplegada puede consultarse y probarse desde:
+
+https://bank-inc-backend-production.up.railway.app/swagger-ui/index.html
+
+### OpenAPI
+
+La especificación OpenAPI está disponible en:
+
+https://bank-inc-backend-production.up.railway.app/v3/api-docs
+
+La conexión a PostgreSQL se configura mediante las variables de entorno `DB_URL`, `DB_USERNAME` y `DB_PASSWORD`, evitando almacenar las credenciales de producción en el repositorio.
